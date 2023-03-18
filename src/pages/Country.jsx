@@ -4,19 +4,24 @@ import { useEffect, useState } from 'react';
 import { fetchCountry } from 'service/country-service';
 
 export const Country = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { countryId } = useParams();
   const [country, setCountry] = useState('');
 
-  
-  
   useEffect(() => {
-  fetchCountry(countryId).then(resp => {setCountry(resp)});
-  }, [countryId])
-  
+    setIsLoading(true);
+    fetchCountry(countryId)
+      .then(resp => {
+        setCountry(resp);
+      })
+      .finally(() => setIsLoading(false));
+  }, [countryId]);
+
   return (
     <Section>
       <Container>
-        <CountryInfo country={country } />
+        <CountryInfo country={country} />
+        {isLoading && <Loader />}
       </Container>
     </Section>
   );
